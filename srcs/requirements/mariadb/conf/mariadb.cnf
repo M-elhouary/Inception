@@ -1,0 +1,16 @@
+[mariadb]
+
+user = mysql
+
+bind-address = 127.0.0.1
+
+port = 3306
+
+datadir = /var/lib/mysql
+
+socket = /run/mysqld
+
+
+pid_file = /run/mysqld
+
+
