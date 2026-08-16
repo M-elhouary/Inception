@@ -1,0 +1,49 @@
+services:
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - inception
+    expose:
+      - "3306"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          MYSQL_PWD=$$(cat /run/secrets/db_root_password)
+          mariadb-admin --user=root --protocol=socket
+          --socket=/run/mysqld/mysqld.sock ping --silent
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+
+networks:
+  inception:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_PATH}/mariadb
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
