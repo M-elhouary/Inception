@@ -8,6 +8,7 @@ DATA_PATH		=	$(shell grep -E '^DATA_PATH' $(ENV_FILE) | cut -d'=' -f2 | tr -d ' 
 all: up
 
 up:
+	@mkdir -p $(DATA_PATH)/mariadb
 	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up --build -d
 
 down:
