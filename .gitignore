@@ -1,2 +1,2 @@
-secret/*.text
+/secret/*.txt
 .env
