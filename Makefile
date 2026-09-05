@@ -1,14 +1,15 @@
 COMPOSE			=	docker compose
 COMPOSE_FILE	=	srcs/docker-compose.yml
 ENV_FILE		=	srcs/.env
-DATA_PATH		=	$(shell grep -E '^DATA_PATH' $(ENV_FILE) | cut -d'=' -f2 | tr -d ' ')
+DATA_PATH		=	/home/mel-houa/data
 
 .PHONY: all up down clean fclean re logs ps prune
 
 all: up
 
 up:
-	@mkdir -p $(DATA_PATH)/mariadb
+	@sudo  mkdir -p $(DATA_PATH)/mariadb
+	@sudo  mkdir -p $(DATA_PATH)/wordpress
 	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up --build -d
 
 down:

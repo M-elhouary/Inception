@@ -30,6 +30,46 @@ services:
       retries: 10
       start_period: 15s
 
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    container_name: wordpress
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    environment:
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_HOST: mariadb
+      WP_URL: https://mel-houa.42.fr
+      WP_TITLE: Inception
+      WP_ADMIN_USER: mel-houa
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      WP_ADMIN_EMAIL: mel-houa@example.com
+    secrets:
+      - db_password
+      - wp_admin_password
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+
+  nginx:
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+
 networks:
   inception:
     driver: bridge
@@ -40,71 +80,18 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ${DATA_PATH}/mariadb
+      device: /home/mel-houa/data/mariadb
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/mel-houa/data/wordpress
 
 secrets:
   db_password:
     file: ../secrets/db_password.txt
   db_root_password:
     file: ../secrets/db_root_password.txt
-
-
-
-  volumes:
-  - wordpress_data:/var/www/html
-
-
-
-
-  wordpress:
-  build:
-    context: ./requirements/wordpress
-    dockerfile: Dockerfile
-
-  container_name: wordpress
-
-  restart: unless-stopped
-
-  depends_on:
-    - mariadb
-
-  environment:
-    DB_NAME: wordpress
-    DB_USER: wp_user
-    DB_HOST: mariadb
-
-    WP_URL: https://localhost
-    WP_TITLE: Inception
-    WP_ADMIN_USER: smohamed
-    WP_ADMIN_EMAIL: admin@example.com
-
-  secrets:
-    - db_password
-    - wp_admin_password
-
-
-  networks:
-    - inception
-
-
-
-nginx:
-  build:
-    context: ./requirements/nginx
-    dockerfile: Dockerfile
-
-  container_name: nginx
-
-  restart: unless-stopped
-
-  depends_on:
-    - wordpress
-
-  ports:
-    - "443:443"
-
-  volumes:
-    - wordpress_data:/var/www/html:ro
-
-  networks:
-    - inception
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt

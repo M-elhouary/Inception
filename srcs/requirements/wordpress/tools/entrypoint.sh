@@ -8,10 +8,9 @@ DB_NAME="${DB_NAME:-wordpress}"
 DB_USER="${DB_USER:-wp_user}"
 DB_HOST="${DB_HOST:-mariadb}"
 
-WP_URL="${WP_URL:-https://localhost}"
+WP_URL="${WP_URL:-https://mel-houa.42.fr}"
 WP_TITLE="${WP_TITLE:-Inception}"
-WP_ADMIN_USER="${WP_ADMIN_USER:-smohamed}"
-WP_ADMIN_EMAIL="${WP_ADMIN_EMAIL:-admin@example.com}"
+WP_ADMIN_USER="${WP_ADMIN_USER:-mel-houa}"
 
 DB_PASSWORD="$(cat /run/secrets/db_password)"
 WP_ADMIN_PASSWORD="$(cat /run/secrets/wp_admin_password)"

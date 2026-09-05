@@ -19,6 +19,5 @@ RUN openssl req \
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-RUN nginx -t
-
+EXPOSE 443
 CMD ["nginx", "-g", "daemon off;"]
