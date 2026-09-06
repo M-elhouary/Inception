@@ -16,9 +16,10 @@ down:
 	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down
 
 clean:
-	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down --rmi all --volumes
+	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down --rmi all
 
 fclean: clean
+	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down --volumes
 	@sudo rm -rf $(DATA_PATH)
 	@echo "Removed $(DATA_PATH)"
 
@@ -32,4 +33,6 @@ ps:
 	@$(COMPOSE) --env-file $(ENV_FILE) -f $(COMPOSE_FILE) ps
 
 prune:
-	@docker system prune -af
+	@echo "This will remove ALL unused Docker images, containers, networks and build cache system-wide."
+	@echo "Type 'yes' to continue, or anything else to abort."
+	@read -r answer; if [ "$$answer" = "yes" ]; then docker system prune -af; else echo "Aborted."; fi

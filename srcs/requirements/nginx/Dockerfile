@@ -15,7 +15,8 @@ RUN openssl req \
     -newkey rsa:2048 \
     -keyout /etc/nginx/ssl/inception.key \
     -out /etc/nginx/ssl/inception.crt \
-    -subj "/C=MA/ST=Morocco/L=Khouribga/O=42/OU=Inception/CN=localhost"
+    -subj "/C=MA/ST=Morocco/L=Khouribga/O=42/OU=Inception/CN=mel-houa.42.fr" \
+    -addext "subjectAltName=DNS:mel-houa.42.fr"
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 WP_PATH="/var/www/html"
 
@@ -11,9 +11,17 @@ DB_HOST="${DB_HOST:-mariadb}"
 WP_URL="${WP_URL:-https://mel-houa.42.fr}"
 WP_TITLE="${WP_TITLE:-Inception}"
 WP_ADMIN_USER="${WP_ADMIN_USER:-mel-houa}"
+WP_ADMIN_EMAIL="${WP_ADMIN_EMAIL:-mel-houa@42.fr}"
+WP_NORMAL_USER="${WP_NORMAL_USER:-regular_user}"
 
 DB_PASSWORD="$(cat /run/secrets/db_password)"
 WP_ADMIN_PASSWORD="$(cat /run/secrets/wp_admin_password)"
+WP_NORMAL_PASSWORD="$(cat /run/secrets/wp_normal_password)"
+
+if [ -z "$DB_PASSWORD" ] || [ -z "$WP_ADMIN_PASSWORD" ] || [ -z "$WP_NORMAL_PASSWORD" ]; then
+    echo "Error: a required secret is empty" >&2
+    exit 1
+fi
 
 export DB_NAME
 export DB_USER
@@ -81,6 +89,22 @@ then
         --admin_password="$WP_ADMIN_PASSWORD" \
         --admin_email="$WP_ADMIN_EMAIL" \
         --skip-email \
+        --allow-root
+fi
+
+if ! wp user get "$WP_NORMAL_USER" \
+    --field=user_login \
+    --path="$WP_PATH" \
+    --allow-root >/dev/null 2>&1
+then
+    echo "Creating second (non-administrator) user: $WP_NORMAL_USER"
+
+    wp user create \
+        "$WP_NORMAL_USER" \
+        "$WP_NORMAL_USER@42.fr" \
+        --user_pass="$WP_NORMAL_PASSWORD" \
+        --role=subscriber \
+        --path="$WP_PATH" \
         --allow-root
 fi
 

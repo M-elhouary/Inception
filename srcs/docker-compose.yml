@@ -42,14 +42,15 @@ services:
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
       DB_HOST: mariadb
-      WP_URL: https://mel-houa.42.fr
+      WP_URL: https://${DOMAIN_NAME}
       WP_TITLE: Inception
-      WP_ADMIN_USER: mel-houa
-      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
-      WP_ADMIN_EMAIL: mel-houa@example.com
+      WP_ADMIN_USER: ${WP_ADMIN_USER}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_NORMAL_USER: ${WP_NORMAL_USER}
     secrets:
       - db_password
       - wp_admin_password
+      - wp_normal_password
     volumes:
       - wordpress_data:/var/www/html
     networks:
@@ -80,13 +81,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/mel-houa/data/mariadb
+      device: ${DATA_PATH}/mariadb
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/mel-houa/data/wordpress
+      device: ${DATA_PATH}/wordpress
 
 secrets:
   db_password:
@@ -95,3 +96,5 @@ secrets:
     file: ../secrets/db_root_password.txt
   wp_admin_password:
     file: ../secrets/wp_admin_password.txt
+  wp_normal_password:
+    file: ../secrets/wp_user_password.txt
