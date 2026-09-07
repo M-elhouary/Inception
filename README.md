@@ -90,7 +90,7 @@ make          # build and start the stack
 make logs     # follow the container logs
 make ps       # show container status
 make down     # stop the stack (keeps data)
-make clean    # stop and remove containers, images and volumes
+make clean # stop containers and remove project images; persistent data is kept
 make fclean   # clean + delete the host data under /home/mel-houa/data
 make re       # fclean then build and start again
 make prune    # remove docker system assets globally (use with caution)

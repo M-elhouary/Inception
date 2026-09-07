@@ -34,6 +34,7 @@ services:
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
+    image: wordpress
     container_name: wordpress
     restart: unless-stopped
     depends_on:
@@ -60,6 +61,7 @@ services:
     build:
       context: ./requirements/nginx
       dockerfile: Dockerfile
+    image: nginx
     container_name: nginx
     restart: unless-stopped
     depends_on:

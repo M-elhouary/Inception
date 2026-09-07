@@ -11,7 +11,7 @@ DB_HOST="${DB_HOST:-mariadb}"
 WP_URL="${WP_URL:-https://mel-houa.42.fr}"
 WP_TITLE="${WP_TITLE:-Inception}"
 WP_ADMIN_USER="${WP_ADMIN_USER:-mel-houa}"
-WP_ADMIN_EMAIL="${WP_ADMIN_EMAIL:-mel-houa@42.fr}"
+WP_ADMIN_EMAIL="${WP_ADMIN_EMAIL:-mel-houa@student.42.fr}"
 WP_NORMAL_USER="${WP_NORMAL_USER:-regular_user}"
 
 DB_PASSWORD="$(cat /run/secrets/db_password)"

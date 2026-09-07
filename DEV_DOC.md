@@ -70,8 +70,8 @@ Each service is built from its own `Dockerfile` and its image is named after the
 | `make down` | Stop the stack (keeps data) |
 | `make logs` | Follow logs |
 | `make ps` | Show status |
-| `make clean` | `down` + remove images (`--rmi all`) and volumes |
-| `make fclean` | `clean` + delete `/home/mel-houa/data` |
+| `make clean` | Stop containers and remove project images persistent data is preserved |
+| `make fclean` | Run `clean`, remove named volumes, and delete `/home/mel-houa/data` |
 | `make re` | `fclean` then `make` |
 | `make prune` | `docker system prune -af` (global; use with care) |
 
@@ -104,4 +104,6 @@ Both named volumes are configured with `driver_opts` binding them to real host d
 /home/mel-houa/data/wordpress
 ```
 
-The MariaDB entrypoint initializes the database **only on the first start** (when the internal `mysql` system database is absent). On later starts it skips initialization, so the database, the WordPress files, the WordPress installation, and both WordPress users survive container deletion and recreation. `make down` and plain `docker compose down` preserve this data; only `make clean`/`make fclean` (which use `--volumes` and remove the host directories) delete it.
+The MariaDB entrypoint initializes the database **only on the first start** (when the internal `mysql` system database is absent). On later starts it skips initialization, so the database, the WordPress files, the WordPress installation, and both WordPress users survive container deletion and recreation. `make down` and plain `docker compose down` preserve this data; `make down` and `make clean` preserve the persistent website and database
+data. Only `make fclean` deliberately removes the named volumes and deletes
+the host directories under `/home/mel-houa/data`.

@@ -63,7 +63,10 @@ To manage them safely:
 
 1. Keep the files read-only for everyone except the owner (mode `600`).
 2. Use a different, strong password for each account.
-3. After changing a secret, rebuild and re-initialize the stack with `make re` so the running services use the new value.
+3. > **Warning:** `make re` deletes all MariaDB and WordPress data before
+> rebuilding the infrastructure. Back up important data before using it.
+> Changing a password in a secret file does not automatically change the
+> password already stored inside MariaDB or WordPress.
 
 ## How to check that the services are running correctly
 
