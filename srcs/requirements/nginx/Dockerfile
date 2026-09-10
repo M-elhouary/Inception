@@ -3,7 +3,6 @@ FROM debian:bookworm
 RUN apt-get update && apt-get install -y \
     nginx \
     openssl \
-    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/nginx/ssl
@@ -18,7 +17,9 @@ RUN openssl req \
     -subj "/C=MA/ST=Morocco/L=Khouribga/O=42/OU=Inception/CN=mel-houa.42.fr" \
     -addext "subjectAltName=DNS:mel-houa.42.fr"
 
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY conf/nginx.conf /etc/nginx/conf.d/inception.conf
+RUN rm /etc/nginx/sites-enabled/default
 
 EXPOSE 443
+
 CMD ["nginx", "-g", "daemon off;"]

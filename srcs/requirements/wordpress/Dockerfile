@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y \
     php-xml \
     php-zip \
     curl \
-    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL \
@@ -24,6 +23,7 @@ RUN sed -i \
 RUN mkdir -p /var/www/html \
     && chown -R www-data:www-data /var/www/html
 
+COPY conf/wordpress.conf /usr/local/bin/wordpress.conf
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh

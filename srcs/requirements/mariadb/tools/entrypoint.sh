@@ -7,11 +7,6 @@ set -eu
 DB_PASSWORD="$(cat /run/secrets/db_password)"
 DB_ROOT_PASSWORD="$(cat /run/secrets/db_root_password)"
 
-if [ -z "$DB_PASSWORD" ] || [ -z "$DB_ROOT_PASSWORD" ]; then
-    echo "Error: passwords cannot be empty" >&2
-    exit 1
-fi
-
 case "$MYSQL_DATABASE" in
     *[!A-Za-z0-9_]*)
         echo "Error: invalid MYSQL_DATABASE" >&2
@@ -65,4 +60,4 @@ fi
 
 rm -f /tmp/mariadb-init.sql
 
-exec "$@" --user=mysql
+exec "$@" --user=mysql 

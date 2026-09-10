@@ -2,26 +2,11 @@
 
 set -eu
 
-WP_PATH="/var/www/html"
-
-DB_NAME="${DB_NAME:-wordpress}"
-DB_USER="${DB_USER:-wp_user}"
-DB_HOST="${DB_HOST:-mariadb}"
-
-WP_URL="${WP_URL:-https://mel-houa.42.fr}"
-WP_TITLE="${WP_TITLE:-Inception}"
-WP_ADMIN_USER="${WP_ADMIN_USER:-mel-houa}"
-WP_ADMIN_EMAIL="${WP_ADMIN_EMAIL:-mel-houa@student.42.fr}"
-WP_NORMAL_USER="${WP_NORMAL_USER:-regular_user}"
+. /usr/local/bin/wordpress.conf
 
 DB_PASSWORD="$(cat /run/secrets/db_password)"
 WP_ADMIN_PASSWORD="$(cat /run/secrets/wp_admin_password)"
 WP_NORMAL_PASSWORD="$(cat /run/secrets/wp_normal_password)"
-
-if [ -z "$DB_PASSWORD" ] || [ -z "$WP_ADMIN_PASSWORD" ] || [ -z "$WP_NORMAL_PASSWORD" ]; then
-    echo "Error: a required secret is empty" >&2
-    exit 1
-fi
 
 export DB_NAME
 export DB_USER
