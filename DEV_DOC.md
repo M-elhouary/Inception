@@ -17,20 +17,20 @@ docker compose version
 
 ### Configure the local files
 
-1. **`srcs/.env`** — edit it and replace the values with your own login. It contains **non-secret** configuration only. For this project:
+`srcs/.env` is provided in the repository and contains **non-secret** configuration only (domain, database name, usernames). If your 42 login differs from `mel-houa`, edit it:
 
    ```env
-   LOGIN=mel-houa
    DOMAIN_NAME=mel-houa.42.fr
-   DATA_PATH=/home/mel-houa/data
    MYSQL_DATABASE=wordpress
    MYSQL_USER=wp_user
    WP_ADMIN_USER=mel-houa
-   WP_ADMIN_EMAIL=mel-houa@42.fr
+   WP_ADMIN_EMAIL=mel-houa@student.42.fr
    WP_NORMAL_USER=regular_user
    ```
 
-2. **`secrets/`** — create a plain-text file per credential, one password per line (no trailing newline required):
+   After changing the values, also update the login in the Makefile (`DATA_PATH`), in `docker-compose.yml` (volume `device` paths) and in the NGINX certificate/`server_name`.
+
+2. **`secrets/`** — secret files are **not** committed. On a fresh clone you must create the folder and one plain-text file per credential (one password per line, no trailing newline required):
 
    ```text
    secrets/db_password.txt

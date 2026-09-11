@@ -1,14 +1,8 @@
 FROM debian:bookworm
 
 RUN apt-get update && apt-get install -y \
-    php-fpm \
-    php-mysql \
-    php-curl \
-    php-gd \
-    php-mbstring \
-    php-xml \
-    php-zip \
-    curl \
+    php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-zip \
+    curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL \
@@ -16,16 +10,11 @@ RUN curl -fsSL \
     -o /usr/local/bin/wp \
     && chmod +x /usr/local/bin/wp
 
-RUN sed -i \
-    's|listen = /run/php/php8.2-fpm.sock|listen = 9000|' \
+RUN sed -i 's|listen = /run/php/php8.2-fpm.sock|listen = 9000|' \
     /etc/php/8.2/fpm/pool.d/www.conf
-
-RUN mkdir -p /var/www/html \
-    && chown -R www-data:www-data /var/www/html
 
 COPY conf/wordpress.conf /usr/local/bin/wordpress.conf
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
-
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html

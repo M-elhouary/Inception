@@ -1,9 +1,7 @@
 services:
   mariadb:
-    build:
-      context: ./requirements/mariadb
-      dockerfile: Dockerfile
-    image: mariadb
+    build: ./requirements/mariadb
+    image: mariadb:inception
     container_name: mariadb
     restart: unless-stopped
     environment:
@@ -16,17 +14,27 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - inception
-
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          MYSQL_PWD="$$(cat /run/secrets/db_password)"
+          mariadb --protocol=tcp -h 127.0.0.1
+          -u "$$MYSQL_USER" --database="$$MYSQL_DATABASE"
+          -e "SELECT 1" >/dev/null 2>&1
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
 
   wordpress:
-    build:
-      context: ./requirements/wordpress
-      dockerfile: Dockerfile
-    image: wordpress
+    build: ./requirements/wordpress
     container_name: wordpress
+    image: wordpress:inception
     restart: unless-stopped
     depends_on:
-      - mariadb
+       mariadb:
+          condition: service_healthy
     environment:
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
@@ -46,14 +54,12 @@ services:
       - inception
 
   nginx:
-    build:
-      context: ./requirements/nginx
-      dockerfile: Dockerfile
-    image: nginx
+    build: ./requirements/nginx
     container_name: nginx
+    image: nginx:inception
     restart: unless-stopped
     depends_on:
-      - wordpress
+       - wordpress
     ports:
       - "443:443"
     volumes:
@@ -63,13 +69,20 @@ services:
 
 networks:
   inception:
-    driver: bridge
 
 volumes:
   mariadb_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/mel-houa/data/mariadb
   wordpress_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/mel-houa/data/wordpress
 
 secrets:
   db_password:
